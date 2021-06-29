@@ -235,6 +235,8 @@ int32_t MCP3912::ReadSingleValue(uint8_t chAddr){
 
 
     digitalWrite(_CSpin, HIGH);
+    vspi->endTransaction();
+
     int32_t temp = 0;
     temp = (
             ((uint32_t)Buf[0]<<16) |
