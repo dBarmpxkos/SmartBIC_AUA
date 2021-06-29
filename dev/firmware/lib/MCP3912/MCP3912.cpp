@@ -1,25 +1,19 @@
-//
-// Created by euphoria on 6/27/2021.
-//
-
 #include "MCP3912.h"
-
 #include <SPI.h>
-SPIClass SPI1(SPI);
 
-MCP3912::MCP3912(uint8_t CsPin, uint8_t DRpin, uint8_t CLKIpin, float CLKIspeed){
+SPIClass * vspi = new SPIClass(VSPI);
+
+MCP3912::MCP3912(uint8_t CsPin, uint8_t DRpin){
     _CSpin = CsPin;
     _DRpin = DRpin;
-    _CLKIpin = CLKIpin;
+    // _CLKIpin = CLKIpin;
 
     pinMode(_CSpin, OUTPUT);
-    pinMode(_CLKIpin, OUTPUT);
+    // pinMode(_CLKIpin, OUTPUT);
     pinMode(_DRpin, INPUT_PULLUP);
 
-    digitalWriteFast(_CSpin, HIGH); /* ToDo implement fast digitalWrite */
-                                    /* GPIO.out_w1ts = ((uint32_t)1 << 22); */
-    analogWriteFrequency(_CLKIpin, CLKIspeed);
-    analogWrite(_CLKIpin, 128); //50% duty cycle
+    digitalWrite(_CSpin, HIGH);
+
 }
 
 MCP3912::~MCP3912(){
@@ -28,8 +22,8 @@ MCP3912::~MCP3912(){
 
 void MCP3912::Configuration(byte DitherMode,byte PreScale, byte OSR, byte boost, byte PGA_CH0, byte PGA_CH1, byte PGA_CH2, byte PGA_CH3){
 
-    SPI.begin();
-
+    Serial.println("starts");
+    vspi->begin();
     Settings.Boost = boost;
     Settings.DitherMode = DitherMode;
     Settings.OSR = OSR;
@@ -71,38 +65,38 @@ void MCP3912::Configuration(byte DitherMode,byte PreScale, byte OSR, byte boost,
     _Config1[1] = 0x00; //No shut-down active
     _Config1[2] = 0x40;//Internal voltage reference, external clock
 
-// 	Serial.println("Configuration sent to ADC");
-// 	Serial.print("Gain Register: ");
-// 	printBinaryByte(_Gain,3);
-// 	Serial.println();
-// 	Serial.print("StatusCom: ");
-// 	printBinaryByte(_StatusCom,3);
-// 	Serial.println();
-// 	Serial.print("Config0: ");
-// 	printBinaryByte(_Config0,3);
-// 	Serial.println();
-// 	Serial.print("Config1: ");
-// 	printBinaryByte(_Config1,3);
-// 	Serial.println();
+ 	Serial.println("Configuration sent to ADC");
+ 	Serial.print("Gain Register: ");
+ 	printBinaryByte(_Gain,3);
+ 	Serial.println();
+ 	Serial.print("StatusCom: ");
+ 	printBinaryByte(_StatusCom,3);
+ 	Serial.println();
+ 	Serial.print("Config0: ");
+ 	printBinaryByte(_Config0,3);
+ 	Serial.println();
+ 	Serial.print("Config1: ");
+ 	printBinaryByte(_Config1,3);
+ 	Serial.println();
 
-    digitalWriteFast(_CSpin, LOW);
-    SPI.beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
-    SPI.transfer(MCP3912_WRITE_MASK | (Addresses.GAIN<<1));
-    SPI.transfer(_Gain[0]);
-    SPI.transfer(_Gain[1]);
-    SPI.transfer(_Gain[2]);
-    SPI.transfer(_StatusCom[0]);
-    SPI.transfer(_StatusCom[1]);
-    SPI.transfer(_StatusCom[2]);
-    SPI.transfer(_Config0[0]);
-    SPI.transfer(_Config0[1]);
-    SPI.transfer(_Config0[2]);
-    SPI.transfer(_Config1[0]);
-    SPI.transfer(_Config1[1]);
-    SPI.transfer(_Config1[2]);
-    SPI.endTransaction();
+    digitalWrite(_CSpin, LOW);
+    vspi->beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
+    vspi->transfer(MCP3912_WRITE_MASK | (Addresses.GAIN<<1));
+    vspi->transfer(_Gain[0]);
+    vspi->transfer(_Gain[1]);
+    vspi->transfer(_Gain[2]);
+    vspi->transfer(_StatusCom[0]);
+    vspi->transfer(_StatusCom[1]);
+    vspi->transfer(_StatusCom[2]);
+    vspi->transfer(_Config0[0]);
+    vspi->transfer(_Config0[1]);
+    vspi->transfer(_Config0[2]);
+    vspi->transfer(_Config1[0]);
+    vspi->transfer(_Config1[1]);
+    vspi->transfer(_Config1[2]);
+    vspi->endTransaction();
 
-    digitalWriteFast(_CSpin, HIGH);
+    digitalWrite(_CSpin, HIGH);
 }
 
 int32_t MCP3912::ReadValue(int32_t Data[], uint8_t chToRead){
@@ -112,15 +106,15 @@ int32_t MCP3912::ReadValue(int32_t Data[], uint8_t chToRead){
     byte Buf[4] = {0,0,0,0};
     int32_t temp = 0;
 
-    digitalWriteFast(_CSpin, LOW);
+    digitalWrite(_CSpin, LOW);
     unsigned char readAddress = Addresses.CHANNEL0 << 1; // Channel 0 address = 0x00;
     readAddress |= MCP3912_READ_MASK;
 
-    SPI.beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
-    Buf[0] = SPI.transfer(readAddress);
-    Buf[1] = SPI.transfer(0); // Byte 23-16
-    Buf[2] = SPI.transfer(0); // Byte 15-8
-    Buf[3] = SPI.transfer(0); // Byte 7-0
+    vspi->beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
+    Buf[0] = vspi->transfer(readAddress);
+    Buf[1] = vspi->transfer(0); // Byte 23-16
+    Buf[2] = vspi->transfer(0); // Byte 15-8
+    Buf[3] = vspi->transfer(0); // Byte 7-0
 
     temp = (
             ((uint32_t)Buf[1]<<16) |
@@ -140,9 +134,9 @@ int32_t MCP3912::ReadValue(int32_t Data[], uint8_t chToRead){
     if (chToRead >= 2){
         temp = 0;
 
-        Buf[1] = SPI.transfer(0); // Byte 23-16
-        Buf[2] = SPI.transfer(0); // Byte 15-8
-        Buf[3] = SPI.transfer(0); // Byte 7-0
+        Buf[1] = vspi->transfer(0); // Byte 23-16
+        Buf[2] = vspi->transfer(0); // Byte 15-8
+        Buf[3] = vspi->transfer(0); // Byte 7-0
 
         temp = (
                 ((uint32_t)Buf[1]<<16) |
@@ -162,9 +156,9 @@ int32_t MCP3912::ReadValue(int32_t Data[], uint8_t chToRead){
     }
     if (chToRead >= 3){
         temp = 0;
-        Buf[1] = SPI.transfer(0); // Byte 23-16
-        Buf[2] = SPI.transfer(0); // Byte 15-8
-        Buf[3] = SPI.transfer(0); // Byte 7-0
+        Buf[1] = vspi->transfer(0); // Byte 23-16
+        Buf[2] = vspi->transfer(0); // Byte 15-8
+        Buf[3] = vspi->transfer(0); // Byte 7-0
 
         temp = (
                 ((uint32_t)Buf[1]<<16) |
@@ -184,9 +178,9 @@ int32_t MCP3912::ReadValue(int32_t Data[], uint8_t chToRead){
 
     if (chToRead >= 4){
         temp = 0;
-        Buf[1] = SPI.transfer(0); // Byte 23-16
-        Buf[2] = SPI.transfer(0); // Byte 15-8
-        Buf[3] = SPI.transfer(0); // Byte 7-0
+        Buf[1] = vspi->transfer(0); // Byte 23-16
+        Buf[2] = vspi->transfer(0); // Byte 15-8
+        Buf[3] = vspi->transfer(0); // Byte 7-0
 
         temp = (
                 ((uint32_t)Buf[1]<<16) |
@@ -204,9 +198,9 @@ int32_t MCP3912::ReadValue(int32_t Data[], uint8_t chToRead){
         Data[3] = temp;
     }
 
-    digitalWriteFast(_CSpin, HIGH);
+    digitalWrite(_CSpin, HIGH);
 
-    SPI.endTransaction();
+    vspi->endTransaction();
 
     return (int32_t)chToRead;
 }
@@ -231,16 +225,16 @@ int32_t MCP3912::ReadSingleValue(uint8_t chAddr){
 
     byte Buf[4] = {0,0,0,0};
 
-    digitalWriteFast(_CSpin, LOW);
+    digitalWrite(_CSpin, LOW);
 
-    SPI.beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
-    Buf[3] = SPI.transfer(MCP3912_READ_MASK | (channel<<1));
-    Buf[0] = SPI.transfer(0); // Byte 23-16
-    Buf[1] = SPI.transfer(0); // Byte 15-8
-    Buf[2] = SPI.transfer(0); // Byte 7-0
+    vspi->beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
+    Buf[3] = vspi->transfer(MCP3912_READ_MASK | (channel<<1));
+    Buf[0] = vspi->transfer(0); // Byte 23-16
+    Buf[1] = vspi->transfer(0); // Byte 15-8
+    Buf[2] = vspi->transfer(0); // Byte 7-0
 
 
-    digitalWriteFast(_CSpin, HIGH);
+    digitalWrite(_CSpin, HIGH);
     int32_t temp = 0;
     temp = (
             ((uint32_t)Buf[0]<<16) |
@@ -259,37 +253,37 @@ int32_t MCP3912::ReadSingleValue(uint8_t chAddr){
 }
 
 void MCP3912::ReadConfiguration(void){
-    digitalWriteFast(_CSpin, LOW);
+     digitalWrite(_CSpin, LOW);
 
     byte RegisterInfo[3] = {0,0,0};
-    SPI.beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
-    SPI.transfer(MCP3912_READ_MASK | (Addresses.GAIN<<1));
-    Registers._GainSettings[0] = SPI.transfer(0xFF);
-    Registers._GainSettings[1] = SPI.transfer(0xFF);
-    Registers._GainSettings[2] = SPI.transfer(0xFF);
-    Registers._StatusComSettings [0] = SPI.transfer(0xFF);
-    Registers._StatusComSettings [1] = SPI.transfer(0xFF);
-    Registers._StatusComSettings [2] = SPI.transfer(0xFF);
-    Registers._Config0Register[0] = SPI.transfer(0xFF);
-    Registers._Config0Register[1] = SPI.transfer(0xFF);
-    Registers._Config0Register[2] = SPI.transfer(0xFF);
-    Registers._Config1Register[0] = SPI.transfer(0xFF);
-    Registers._Config1Register[1] = SPI.transfer(0xFF);
-    Registers._Config1Register[2] = SPI.transfer(0xFF);
-    SPI.endTransaction();
+    vspi->beginTransaction(SPISettings(ArduinoSPISpeed, MSBFIRST,SPI_MODE0));
+    vspi->transfer(MCP3912_READ_MASK | (Addresses.GAIN<<1));
+    Registers._GainSettings[0] = vspi->transfer(0xFF);
+    Registers._GainSettings[1] = vspi->transfer(0xFF);
+    Registers._GainSettings[2] = vspi->transfer(0xFF);
+    Registers._StatusComSettings [0] = vspi->transfer(0xFF);
+    Registers._StatusComSettings [1] = vspi->transfer(0xFF);
+    Registers._StatusComSettings [2] = vspi->transfer(0xFF);
+    Registers._Config0Register[0] = vspi->transfer(0xFF);
+    Registers._Config0Register[1] = vspi->transfer(0xFF);
+    Registers._Config0Register[2] = vspi->transfer(0xFF);
+    Registers._Config1Register[0] = vspi->transfer(0xFF);
+    Registers._Config1Register[1] = vspi->transfer(0xFF);
+    Registers._Config1Register[2] = vspi->transfer(0xFF);
+    vspi->endTransaction();
 
-// 	Serial.print("Gain Settings: ");
-// 	printBinaryByte(Registers._GainSettings,3);
-// 	Serial.println();
-// 	Serial.print("Status COM Settings: ");
-// 	printBinaryByte(Registers._StatusComSettings,3);
-// 	Serial.println();
-// 	Serial.print("Config0 Register: ");
-// 	printBinaryByte(Registers._Config0Register,3);
-// 	Serial.println();
-// 	Serial.print("Config1 Register: ");
-// 	printBinaryByte(Registers._Config1Register,3);
-// 	Serial.println();
+ 	Serial.print("Gain Settings: ");
+ 	printBinaryByte(Registers._GainSettings,3);
+ 	Serial.println();
+ 	Serial.print("Status COM Settings: ");
+ 	printBinaryByte(Registers._StatusComSettings,3);
+ 	Serial.println();
+ 	Serial.print("Config0 Register: ");
+ 	printBinaryByte(Registers._Config0Register,3);
+ 	Serial.println();
+ 	Serial.print("Config1 Register: ");
+ 	printBinaryByte(Registers._Config1Register,3);
+ 	Serial.println();
 }
 
 void MCP3912::printBinaryByte(byte *data, uint8_t length){

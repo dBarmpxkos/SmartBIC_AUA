@@ -1,31 +1,44 @@
-/**
- * Blink
- *
- * Turns on an LED on for one second,
- * then off for one second, repeatedly.
- */
+
+#include <MCP3912.h>
 #include "Arduino.h"
+#include "driver/ledc.h"
 
-// Set LED_BUILTIN if it is not defined by Arduino framework
-// #define LED_BUILTIN 13
+#define PULSE_OUTPUT_PIN 16
+MCP3912 POWERADC(5, 17);
 
-void setup()
-{
-    // initialize LED digital pin as an output.
-    pinMode(LED_BUILTIN, OUTPUT);
+
+void setup() {
+    Serial.begin(115200);
+
+    ledc_timer_config_t ledc_timer;
+    ledc_channel_config_t ledc_channel;
+
+    ledc_timer.speed_mode = LEDC_HIGH_SPEED_MODE;
+    ledc_timer.timer_num = LEDC_TIMER_0;
+    ledc_timer.duty_resolution = (ledc_timer_bit_t) 1;
+    ledc_timer.freq_hz = 11000000;
+
+    ledc_channel.channel = LEDC_CHANNEL_0;
+    ledc_channel.gpio_num = PULSE_OUTPUT_PIN;
+    ledc_channel.speed_mode = LEDC_HIGH_SPEED_MODE;
+    ledc_channel.timer_sel = LEDC_TIMER_0;
+    ledc_channel.duty = 1;
+    Serial.println("ESKERE");
+    Serial.println("ESKERE");
+    Serial.println("ESKERE");
+    Serial.println("ESKERE");
+    Serial.println("ESKERE");
+    Serial.println("ESKERE");
+    Serial.println("ESKERE");
+    Serial.println("ESKERE");
+
+    ledc_timer_config(&ledc_timer);
+    ledc_channel_config(&ledc_channel);
+
+    POWERADC.Configuration(0,0,0,0,0,0,0,0);
 }
 
-void loop()
-{
-    // turn the LED on (HIGH is the voltage level)
-    digitalWrite(LED_BUILTIN, HIGH);
-
-    // wait for a second
-    delay(1000);
-
-    // turn the LED off by making the voltage LOW
-    digitalWrite(LED_BUILTIN, LOW);
-
-    // wait for a second
-    delay(1000);
+void loop() {
+    delay(500);
+    Serial.println(POWERADC.ReadSingleValue(0));
 }

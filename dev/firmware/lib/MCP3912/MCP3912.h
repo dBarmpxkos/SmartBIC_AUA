@@ -1,23 +1,17 @@
 //
 // Created by euphoria on 6/27/2021.
 //
-#ifndef FIRMWARE_MCP3912_H
-#define FIRMWARE_MCP3912_H
+#ifndef MCP3912_H
+#define MCP3912_H
 
 #include <cstdint>
 #include <Arduino.h>
 
-#define ArduinoSPISpeed 4000000 //12MHz
-#define UseArduinoSPI
-
-#define WIDTH_ADC0_16bit 0x0
-#define WIDTH_ADC0_24bit 0x8
-#define WIDTH_ADC1_16bit 0x0
-#define WIDTH_ADC1_24bit 0x10
+#define ArduinoSPISpeed 4000000
 
 class MCP3912{
 public:
-    MCP3912(uint8_t CsPin, uint8_t DRpin, uint8_t CLKIpin, float CLKIspeed);
+    MCP3912(uint8_t CsPin, uint8_t DRpin);
     ~MCP3912();
     void Configuration(byte DitherMode,byte PreScale, byte OSR, byte boost, byte PGA_CH0, byte PGA_CH1, byte PGA_CH2, byte PGA_CH3);
     int32_t ReadValue(int32_t Data[], uint8_t chToRead);
@@ -27,6 +21,13 @@ public:
     void printBinaryInt16(uint16_t *data, uint8_t length);
     void printBinaryInt32(uint32_t *data, uint8_t length);
     uint8_t _DRpin;
+
+    struct{
+        byte _GainSettings[3];
+        byte _StatusComSettings[3];
+        byte _Config0Register[3];
+        byte _Config1Register[3];
+    }Registers;
 
 private:
 
@@ -103,12 +104,7 @@ private:
         double Vref; //for calibation
     }Settings;
 
-    struct{
-        byte _GainSettings[3];
-        byte _StatusComSettings[3];
-        byte _Config0Register[3];
-        byte _Config1Register[3];
-    }Registers;
+
     //HW settings
     uint8_t _CSpin;
     uint8_t _CLKIpin;
