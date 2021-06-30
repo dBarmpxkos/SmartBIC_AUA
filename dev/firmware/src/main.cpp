@@ -26,7 +26,7 @@ void setup() {
 void loop() {
     if (measure && state == sSample) {
         portENTER_CRITICAL(&timerMUX);
-        for (auto &sample : samples) {
+        for (auto & sample : samples) {
             sample[0] = MCP3912.read_single_value(0);
             sample[1] = MCP3912.read_single_value(1);
             sample[2] = MCP3912.read_single_value(2);
@@ -38,15 +38,9 @@ void loop() {
     }
 
     if (state == sProcess) {
-        for (auto &sample : samples) {
-            Serial.println(sample[0]);
-        }
-        int32_t testArray[] = {-5,-4,-3,-2,-1,1,2,3,4,5};
-        MedianFilter<int32_t, 10> filter;
-        for (auto &testSample : testArray){
-            filter.addSample(testSample);
-        }
-        Serial.println(filter.getMedian());
+        int32_t filtered[4];
+        return_median_to_var(samples, filtered);
+        Serial.printf("\r\n%i %i %i %i", filtered[0], filtered[1], filtered[2], filtered[3]);
         state = sTransmit;
     }
 }

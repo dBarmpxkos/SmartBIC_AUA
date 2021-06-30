@@ -9,11 +9,6 @@
 #include "../lib/generic_functions/generic_functions.h"
 /* end of includes */
 
-/* PFP */
-void start_clock(uint8_t clkPin, uint32_t frequency);\
-void start_timer(uint8_t timerNum, uint16_t divider, bool countUp, uint64_t interruptAt, bool autoReload, bool enable);
-/* end of PFP */
-
 /* variables */
 typedef enum {
     sConfig,
@@ -31,6 +26,11 @@ MCP3912 MCP3912(MCP_CS_PIN, MCP_DR_PIN);
 ADCConfig activeConf;       /* this can later be exposed to user settings via GUI */
 
 int32_t samples[1000][4] = {};
-uint16_t sampleCounter = 0;
+//MedianFilter<int32_t, 1000> sampleFilter;
+
+/* PFP */
+void start_clock(uint8_t clkPin, uint32_t frequency);
+void start_timer(uint8_t timerNum, uint16_t divider, bool countUp, uint64_t interruptAt, bool autoReload, bool enable);
+/* end of PFP */
 
 #endif //FIRMWARE_MAIN_H

@@ -3,8 +3,6 @@
 
 #include <cstdint>
 
-#define MEDIAN_FILTER_SIZE   3
-
 template <typename T, int S>
 class MedianFilter {
 public:
@@ -108,4 +106,5 @@ private:
 
 };
 
+void return_median_to_var(int32_t rawSamples[1000][4], int32_t filteredOut[4]);
 #endif //FIRMWARE_GENERIC_FUNCTIONS_H
