@@ -41,6 +41,12 @@ void loop() {
         for (auto &sample : samples) {
             Serial.println(sample[0]);
         }
+        int32_t testArray[] = {-5,-4,-3,-2,-1,1,2,3,4,5};
+        MedianFilter<int32_t, 10> filter;
+        for (auto &testSample : testArray){
+            filter.addSample(testSample);
+        }
+        Serial.println(filter.getMedian());
         state = sTransmit;
     }
 }
