@@ -13,7 +13,6 @@ void setup() {
     MCP3912.setup_MCP_configuration(activeConf);
     MCP3912.write_MCP_configuration(activeConf);
     MCP3912.read_MCP_configuration();
-    /* test commit */
 
 }
 
@@ -27,6 +26,7 @@ void loop() {
                       MCP3912.read_single_value(2),
                       MCP3912.read_single_value(3));
     }
+
 }
 
 void start_clock(uint8_t clk_pin, uint32_t frequency) {
