@@ -1,3 +1,6 @@
+#include "Arduino.h"
+#include <MCP3912.h>
+#include "sauce.h"
 #include "driver/ledc.h"
 
 #ifndef FIRMWARE_MAIN_H

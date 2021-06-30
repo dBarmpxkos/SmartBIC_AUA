@@ -9,5 +9,6 @@ const char PROGMEM logo[] =
 *   \\__ \\ |\\/| |/ _ \\|   / | | | _ \\| | (__\t* \r\n\
 *   |___/_|  |_/_/ \\_\\_|_\\ |_| |___/___\\___|\t* \r\n\
 * * * * * * * * * * * * * * * * * * * * * * * * *\r\n";
-
+const char PROGMEM firmwareNFO[] = "v0.5.1_prototype.30062021\r\n\
+-------------------------------------------------"; /* semver_hardware.date */
 #endif //FIRMWARE_SAUCE_H

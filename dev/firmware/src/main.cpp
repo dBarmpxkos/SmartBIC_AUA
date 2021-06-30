@@ -1,41 +1,34 @@
-#include "Arduino.h"
-#include <MCP3912.h>
 #include "main.h"
-#include "sauce.h"
 
 MCP3912 MCP3912(MCP_CS_PIN, MCP_DR_PIN);
-ADCConfig activeConf;   /* this can later be exposed to user settings */
+ADCConfig activeConf; /* this can later be exposed to user settings */
 
 void setup() {
     Serial.begin(115200);
-    start_clock(MCP_CLK_PIN, MCP_FREQ);              /* outputs clock pulse to MCP CLKIN pin */
-    /* MCP3912.write_MCP_configuration(3, 0, 255, 2, 0, 0, 0, 0); or pass a config structure */
-    activeConf.DitherMode = 3;
-    activeConf.PreScale = 1;
-    activeConf.OSR = 255;
-    activeConf.boost = 2;
-    activeConf.PGA_CH0 = 1;
-    activeConf.PGA_CH1 = 3;
-    activeConf.PGA_CH2 = 0;
-    activeConf.PGA_CH3 = 0;
+    start_clock(MCP_CLK_PIN, MCP_FREQ); /* clock pulse to MCP CLKIN pin */
 
     Serial.print(logo);
+    Serial.print(firmwareNFO);
 
-    MCP3912.write_MCP_configuration(activeConf); /* like so */
-    MCP3912.read_MCP_configuration();            /* validates settings */
+    MCP3912.setup_MCP_configuration(activeConf);
+    MCP3912.write_MCP_configuration(activeConf);
+    MCP3912.read_MCP_configuration();
 
 }
 
 void loop() {
-    Serial.printf("\r\nCH0: %i\tCH1: %i\tCH2: %i\tCH3: %i",
-                  MCP3912.read_single_value(0),
-                  MCP3912.read_single_value(1),
-                  MCP3912.read_single_value(2),
-                  MCP3912.read_single_value(3));
-    delay(500);
+    bool hasNewData = MCP3912.mcp_data_ready(0x0C);  /* 0x0C STATUSCOM register */
+    while (!hasNewData) { /* waits */ }
+    if (hasNewData) {
+        Serial.printf("\r\nCH0: %i\tCH1: %i\tCH2: %i\tCH3: %i",
+                      MCP3912.read_single_value(0),
+                      MCP3912.read_single_value(1),
+                      MCP3912.read_single_value(2),
+                      MCP3912.read_single_value(3));
+    }
 }
 
-void start_clock(uint8_t clk_pin, uint32_t frequency){
+void start_clock(uint8_t clk_pin, uint32_t frequency) {
     ledc_timer_config_t ledc_timer;
     ledc_channel_config_t ledc_channel;
 

@@ -24,11 +24,14 @@ typedef struct {
     byte PGA_CH3;
 } ADCConfig;
 
+
 class MCP3912 {
 public:
     MCP3912(uint8_t CsPin, uint8_t DRpin);
 
     ~MCP3912();
+
+    void setup_MCP_configuration(ADCConfig &activeConfig);
 
     void write_MCP_configuration(byte DitherMode, byte PreScale, byte OSR, byte boost, byte PGA_CH0, byte PGA_CH1,
                                  byte PGA_CH2, byte PGA_CH3);
@@ -46,6 +49,10 @@ public:
     void print_binary_int16(uint16_t *data, uint8_t length);
 
     void print_binary_int32(uint32_t *data, uint8_t length);
+
+    long mcp3912_read_reg(byte reg);
+
+    byte mcp_data_ready(byte statComRegister);
 
     uint8_t _DRpin;
 
