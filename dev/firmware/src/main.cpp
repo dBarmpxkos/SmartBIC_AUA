@@ -13,6 +13,7 @@ void setup() {
     MCP3912.setup_MCP_configuration(activeConf);
     MCP3912.write_MCP_configuration(activeConf);
     MCP3912.read_MCP_configuration();
+    /* tests */
 
 }
 
