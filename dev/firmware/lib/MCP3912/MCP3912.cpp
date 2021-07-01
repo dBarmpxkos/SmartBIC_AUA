@@ -395,13 +395,13 @@ long MCP3912::mcp3912_read_reg(byte reg) {
     byte Buf[4] = {0, 0, 0, 0};
 
     digitalWrite(_CSpin, LOW);
-
-    vspi->beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
-    vspi->transfer((((0b01) << 6) | (reg << 1) | 1));
-    Buf[0] = 0;
-    Buf[1] = SPI.transfer(0);
-    Buf[2] = SPI.transfer(0);
-    Buf[3] = SPI.transfer(0);
+        vspi->beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+/* S */ byte treg = ((0b01)<<6) | (reg<<1) | 1;
+/* P */ vspi->transfer(treg);
+/* I */ Buf[0] = 0;
+        Buf[1] = vspi->transfer(0);
+        Buf[2] = vspi->transfer(0);
+        Buf[3] = vspi->transfer(0);
     digitalWrite(_CSpin, HIGH);
     vspi->endTransaction();
 

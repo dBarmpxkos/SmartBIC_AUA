@@ -25,8 +25,9 @@ portMUX_TYPE timerMUX = portMUX_INITIALIZER_UNLOCKED;
 MCP3912 MCP3912(MCP_CS_PIN, MCP_DR_PIN);
 ADCConfig activeConf;       /* this can later be exposed to user settings via GUI */
 
-int32_t samples[1000][4] = {};
-//MedianFilter<int32_t, 1000> sampleFilter;
+const int16_t RAW_SAMPLE_SIZE = 300;
+int32_t samples[RAW_SAMPLE_SIZE][4] = {};
+int32_t filtered[4];
 
 /* PFP */
 void start_clock(uint8_t clkPin, uint32_t frequency);

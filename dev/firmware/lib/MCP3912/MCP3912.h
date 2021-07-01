@@ -10,7 +10,7 @@
 #define MCP_CLK_PIN 16
 #define MCP_CS_PIN 5
 #define MCP_DR_PIN 17
-#define MCP_FREQ 11000000
+#define MCP_FREQ 12000000
 #define SPI_SPEED 4000000
 
 typedef struct {
