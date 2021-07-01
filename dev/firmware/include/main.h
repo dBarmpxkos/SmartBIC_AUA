@@ -25,7 +25,7 @@ portMUX_TYPE timerMUX = portMUX_INITIALIZER_UNLOCKED;
 MCP3912 MCP3912(MCP_CS_PIN, MCP_DR_PIN);
 ADCConfig activeConf;       /* this can later be exposed to user settings via GUI */
 
-const int16_t RAW_SAMPLE_SIZE = 300;
+const int16_t RAW_SAMPLE_SIZE = 20;
 int32_t samples[RAW_SAMPLE_SIZE][4] = {};
 int32_t filtered[4];
 

@@ -1,6 +1,6 @@
 #include "generic_functions.h"
 
-extern const int16_t RAW_SAMPLE_SIZE = 300;
+extern const int16_t RAW_SAMPLE_SIZE = 20;
 MedianFilter<int32_t, RAW_SAMPLE_SIZE> filter;
 
 void return_median_to_var(int32_t rawSamples[RAW_SAMPLE_SIZE][4], int32_t filteredOut[4]) {

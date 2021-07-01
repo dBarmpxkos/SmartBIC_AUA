@@ -20,11 +20,11 @@ MCP3912::~MCP3912() {
 void MCP3912::setup_MCP_configuration(ADCConfig &activeConfig) {
 
     activeConfig.DitherMode = 3;
-    activeConfig.PreScale = 0;
-    activeConfig.OSR = 255;
+    activeConfig.PreScale = 0;          /* Table 4.1 for prescaler values for AMCLK */
+    activeConfig.OSR = 255;             /* Table 4.3 for OSR */
     activeConfig.boost = 0;
-    activeConfig.PGA_CH0 = 0;
-    activeConfig.PGA_CH1 = 0;
+    activeConfig.PGA_CH0 = 0;           /* Table 5.1 */
+    activeConfig.PGA_CH1 = 0;           /* for gain */
     activeConfig.PGA_CH2 = 0;
     activeConfig.PGA_CH3 = 0;
 
@@ -395,7 +395,7 @@ long MCP3912::mcp3912_read_reg(byte reg) {
     byte Buf[4] = {0, 0, 0, 0};
 
     digitalWrite(_CSpin, LOW);
-        vspi->beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
+    vspi->beginTransaction(SPISettings(SPI_SPEED, MSBFIRST, SPI_MODE0));
 /* S */ byte treg = ((0b01)<<6) | (reg<<1) | 1;
 /* P */ vspi->transfer(treg);
 /* I */ Buf[0] = 0;
