@@ -48,7 +48,9 @@ void loop() {
 
     if (state == sTransmit){
         // Serial.printf("\r\n%i,%i,%i,%i", filtered[0], filtered[1], filtered[2], filtered[3]);
-        Serial.printf("\r\n%i", filtered[0]);
+        Serial.printf("\r\n%i\t%i", filtered[0], filtered[0]);
+//        float volts = filtered[0] * 0.143051164513965191121;
+//        Serial.printf("%.4f", volts);
         state = sSample;
 
     }
