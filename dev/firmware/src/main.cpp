@@ -33,7 +33,7 @@ void loop() {
             sample[0] = MCP3912.read_single_value(0);
 //            sample[1] = MCP3912.read_single_value(1);
 //            sample[2] = MCP3912.read_single_value(2);
-//            sample[3] = MCP3912.read_single_value(3);
+            sample[3] = MCP3912.read_single_value(3);
         }
         portENTER_CRITICAL(&timerMUX);
         measure = false;
