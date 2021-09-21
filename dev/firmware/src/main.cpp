@@ -1,11 +1,5 @@
 #include "main.h"
 
-#if CONFIG_FREERTOS_UNICORE
-    static const BaseType_t app_cpu = 0;
-#else
-    static const BaseType_t app_cpu = 1;
-#endif
-
 /* FreeRTOS tasks */
 void taskMeasure(void *parameters){ /* samples ADC */
     for (;;){
@@ -23,8 +17,7 @@ void taskMeasure(void *parameters){ /* samples ADC */
 }
 
 void taskAPI(void *parameters){ /* handles server requests */
-    for (;;){
-    }
+    for (;;){ RESTServer.handleClient(); }
 }
 
 void setup() {
@@ -35,8 +28,10 @@ void setup() {
     Serial.print(firmwareNFO);
     MCP3912.initialize_with_conf(activeConf);   /* felt cute might delete later */
 
-    Serial.print(F("\r\n[SYS]\tSetting up tasks"));
+    setup_AP(ssid, password, localIP, gateway, subnet);
+    setup_endpoints();
 
+    Serial.print(F("\r\n[SYS]\tSetting up tasks"));
     xTaskCreatePinnedToCore(
             taskMeasure,             /* Function that should be called */
             "Measure",       /* Name of the task (for debugging) */
@@ -61,7 +56,6 @@ void setup() {
 
 void loop() {
 
-
 }
 
 void start_clock(uint8_t clk_pin, uint32_t frequency) {
@@ -81,4 +75,18 @@ void start_clock(uint8_t clk_pin, uint32_t frequency) {
 
     ledc_timer_config(&ledc_timer);
     ledc_channel_config(&ledc_channel);
+}
+
+void setup_AP(char *SSID, char *PWD, const IPAddress& softlocalIP, IPAddress softGateway, IPAddress softSubnet){
+    do { /* setup AP */ } while (!WiFi.softAP(SSID, PWD));
+    do { /* setup AP */ } while (!WiFi.softAPConfig(softlocalIP, softGateway, softSubnet));
+}
+
+void handle_OnConnect() {
+    Serial.println("onConnect");
+    RESTServer.send(200, "text/html", "yaw");
+}
+
+void setup_endpoints(){
+    RESTServer.on("/", handle_OnConnect);
 }
