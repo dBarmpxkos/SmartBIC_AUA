@@ -32,26 +32,11 @@ void setup() {
     setup_endpoints();
 
     Serial.print(F("\r\n[SYS]\tSetting up tasks"));
-    xTaskCreatePinnedToCore(
-            taskMeasure,             /* Function that should be called */
-            "Measure",       /* Name of the task (for debugging) */
-            1000,        /* Stack size (bytes) */
-            NULL,        /* Parameter to pass */
-            1,              /* Task priority */
-            NULL,       /* Task handle */
-            app_cpu                  /* core to run */
-    );
-    xTaskCreatePinnedToCore(
-            taskAPI,                 /* Function that should be called */
-            "API",           /* Name of the task (for debugging) */
-            1000,        /* Stack size (bytes) */
-            NULL,        /* Parameter to pass */
-            1,              /* Task priority */
-            NULL,       /* Task handle */
-            app_cpu                  /* core to run */
-    );
+    xTaskCreatePinnedToCore(taskMeasure,"Measure",1000,NULL,1,
+            NULL, app_cpu); /* ADC task */
+    xTaskCreatePinnedToCore(taskAPI,"API",1000,NULL,1,
+            NULL,app_cpu);  /* server task */
     Serial.print(F("\r\n[SYS]\tTask setup done"));
-
 }
 
 void loop() {
@@ -89,4 +74,6 @@ void handle_OnConnect() {
 
 void setup_endpoints(){
     RESTServer.on("/", handle_OnConnect);
+
+    RESTServer.begin();
 }
