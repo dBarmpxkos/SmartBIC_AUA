@@ -10,28 +10,16 @@
 /* end of includes */
 
 /* variables */
-typedef enum {
-    sConfig,
-    sSample,
-    sProcess,
-    sTransmit
-} userFSM ;
-
-userFSM state = sConfig;    /* initial state is to configure ADC */
-volatile bool measure;      /* toggled via ISR */
-hw_timer_t * timer = NULL;
-portMUX_TYPE timerMUX = portMUX_INITIALIZER_UNLOCKED;
-
 MCP3912 MCP3912(MCP_CS_PIN, MCP_DR_PIN);
 ADCConfig activeConf;       /* this can later be exposed to user settings via GUI */
 
+static int measureDelay = 1000;     /* default sample rate to 1 s */
 const int16_t RAW_SAMPLE_SIZE = 20;
 int32_t samples[RAW_SAMPLE_SIZE][4] = {};
 int32_t filtered[4];
 
 /* PFP */
-void start_clock(uint8_t clkPin, uint32_t frequency);
-void start_timer(uint8_t timerNum, uint16_t divider, bool countUp, uint64_t interruptAt, bool autoReload, bool enable);
+void start_clock(uint8_t clk_pin, uint32_t frequency);
 /* end of PFP */
 
 #endif //FIRMWARE_MAIN_H

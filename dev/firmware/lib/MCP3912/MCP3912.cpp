@@ -185,6 +185,13 @@ void MCP3912::write_MCP_configuration(ADCConfig activeConfig) {
 
 }
 
+bool MCP3912::initialize_with_conf(ADCConfig &activeConfig){
+    MCP3912::setup_MCP_configuration(activeConfig);
+    MCP3912::write_MCP_configuration(activeConfig);
+    MCP3912::read_MCP_configuration();
+    return true;
+}
+
 int32_t MCP3912::read_values(int32_t *Data, uint8_t chToRead) {
     if (chToRead == 0)
         return 0;

@@ -38,6 +38,8 @@ public:
 
     void write_MCP_configuration(ADCConfig activeConfig);
 
+    bool initialize_with_conf(ADCConfig &activeConfig);
+
     int32_t read_values(int32_t *Data, uint8_t chToRead);
 
     int32_t read_single_value(uint8_t chAddr);
