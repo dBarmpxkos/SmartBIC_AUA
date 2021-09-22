@@ -14,3 +14,23 @@
 - Wireless connectivity 
     - `BLE` [status : 🚧]
     - `WiFi` [status: 🚧]
+
+## API v1 Reference
+### /v1/measure/start&time=X&inv=Y
+
+method: `GET`
+
+parameters: 
+- `time` in seconds for total measurement session
+- `inv` in ms for sample interval
+response status: `200`
+
+response payload: `started sampling with X interval for Y seconds`
+
+### /v1/measure/stop
+
+method: `GET`
+
+response status: `200`
+
+response payload: `stopped sampling`
