@@ -36,6 +36,11 @@ void handle_notFound(){
 
 void handle_onStartMeasure(){
     activeADC = !activeADC;
+    String message;
+    for (uint8_t i = 0; i < RESTServer.args(); i++) {
+        message += " " + RESTServer.argName(i) + ": " + RESTServer.arg(i) + "\n";
+    }
+    Serial.println(message);
 }
 
 void setup_endpoints(){
