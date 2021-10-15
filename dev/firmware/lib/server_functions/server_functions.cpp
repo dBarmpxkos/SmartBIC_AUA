@@ -6,10 +6,10 @@ extern volatile bool activeADC;
 char ssid[] = "SmartBIC";
 char password[] = "zmartBIKZ";
 
-IPAddress localIP(192,168,1,1);
+IPAddress localIP(192,168,1,99);
 IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,255,0);
-WebServer RESTServer(80);
+AsyncWebServer RESTServer(80);
 
 /* API */
 char startSampling[] = "/v1/start";
@@ -21,39 +21,16 @@ void setup_AP(char *SSID, char *PWD,
     do { /* setup AP */ } while (!WiFi.softAPConfig(softlocalIP, softGateway, softSubnet));
 }
 
-void options_response(){
-    RESTServer.sendHeader("Allow","GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS");
-    RESTServer.sendHeader("Access-Control-Allow-Origin", "*");
-    RESTServer.sendHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS");
-    RESTServer.sendHeader("Access-Control-Allow-Headers", "*");
-    RESTServer.send(200, "text/plain");
-}
-
-void handle_notFound(){
-    RESTServer.sendHeader("Access-Control-Allow-Origin", "*");
-    RESTServer.send(404, "text/plain", "OHMAGAWRD");
-}
-
-void handle_onStartMeasure(){
-    activeADC = !activeADC;
-    String message;
-    for (uint8_t i = 0; i < RESTServer.args(); i++) {
-        message += " " + RESTServer.argName(i) + ": " + RESTServer.arg(i) + "\n";
-    }
-    Serial.println(message);
+void not_found(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
 }
 
 void setup_endpoints(){
-    RESTServer.on("/", HTTP_GET, []() {
-        RESTServer.sendHeader("Access-Control-Allow-Origin", "*");
-        RESTServer.send(200, "text/html",
-                        "SmartBiC");
+
+    RESTServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(200, "text/plain", "Hello, world");
     });
 
-    RESTServer.onNotFound(handle_notFound);
-
-    RESTServer.on(startSampling, HTTP_OPTIONS, options_response);
-    RESTServer.on(startSampling, HTTP_GET, handle_onStartMeasure);
-
+    RESTServer.onNotFound(not_found);
     RESTServer.begin();
 }

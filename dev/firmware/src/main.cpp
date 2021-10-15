@@ -1,48 +1,30 @@
 #include "main.h"
 
-/* FreeRTOS tasks */
-void taskMeasure(void *parameters){     /* samples ADC */
-    for (;;){
-        if (activeADC){
-            vTaskDelay(measureDelay / portTICK_PERIOD_MS);
-            while (!MCP3912.mcp_data_ready(0x0C)) { /* waits */ }
-            for (auto & sample : samples) {
-                sample[0] = MCP3912.read_single_value(0);
-                sample[1] = MCP3912.read_single_value(1);
-                sample[2] = MCP3912.read_single_value(2);
-                sample[3] = MCP3912.read_single_value(3);
-            }
-            return_median_to_var(samples, filtered);
-            Serial.printf("\r\n%i,%i,%i,%i", filtered[0], filtered[1], filtered[2], filtered[3]);
-        }
-    }
-}
-
-void taskAPI(void *parameters){         /* handles server requests */
-    for (;;) { RESTServer.handleClient(); }
-}
-
 void setup() {
     Serial.begin(115200);
     start_clock(MCP_CLK_PIN, MCP_FREQ);             /* clock pulse to MCP CLKIN pin */
+
+    setup_AP(ssid, password, localIP, gateway, subnet);
+    setup_endpoints();
 
     Serial.print(logo);
     Serial.print(firmwareNFO);
     MCP3912.initialize_with_conf(activeConf);    /* felt cute might delete later */
 
-    setup_AP(ssid, password, localIP, gateway, subnet);
-    setup_endpoints();
-
-    Serial.print(F("\r\n[SYS]\tSetting up tasks"));
-    xTaskCreatePinnedToCore(taskMeasure,"Measure",1000,NULL,1,
-            NULL, app_cpu); /* ADC task */
-    xTaskCreatePinnedToCore(taskAPI,"API",1000,NULL,1,
-            NULL,app_cpu);  /* server task */
-    Serial.print(F("\r\n[SYS]\tTask setup done"));
 }
 
 void loop() {
-
+    if (activeADC) {
+        while (!MCP3912.mcp_data_ready(0x0C)) { /* waits */ }
+        for (auto &sample : samples) {
+            sample[0] = MCP3912.read_single_value(0);
+            sample[1] = MCP3912.read_single_value(1);
+            sample[2] = MCP3912.read_single_value(2);
+            sample[3] = MCP3912.read_single_value(3);
+        }
+        return_median_to_var(samples, filtered);
+        Serial.printf("\r\n%i,%i,%i,%i", filtered[0], filtered[1], filtered[2], filtered[3]);
+    }
 }
 
 void start_clock(uint8_t clk_pin, uint32_t frequency) {
