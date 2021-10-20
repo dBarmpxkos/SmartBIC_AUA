@@ -11,11 +11,9 @@
 
 /* end of includes */
 
-TaskHandle_t    ADC_Task;
-TaskHandle_t    API_Task;
 /* variables */
 MCP3912 MCP3912(MCP_CS_PIN, MCP_DR_PIN);
-ADCConfig activeConf;       /* this can later be exposed to user settings via GUI */
+ADCConfig activeConf;               /* this can later be exposed to user settings via GUI */
 
 static int measureDelay = 1000;     /* default sample rate to 1 s */
 const int16_t RAW_SAMPLE_SIZE = 20;
