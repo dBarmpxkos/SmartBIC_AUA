@@ -15,18 +15,13 @@ extern IPAddress gateway;
 extern IPAddress subnet;
 extern AsyncWebServer RESTServer;
 
-/* API */
-extern char startSampling[];
-extern char stopSampling[];
-
 /* PFP */
 void setup_AP(char *SSID, char *PWD,
               const IPAddress &softlocalIP, const IPAddress &softGateway, const IPAddress &softSubnet);
 
 void not_found(AsyncWebServerRequest *request);
 void single_shot(AsyncWebServerRequest *request);
-void batch(AsyncWebServerRequest *request);
-void settings(AsyncWebServerRequest *request);
+void experiment_program(AsyncWebServerRequest *request);
 
 void setup_endpoints();
 

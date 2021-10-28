@@ -15,15 +15,19 @@ void setup() {
 
 void loop() {
     if (activeADC) {
-        while (!MCP3912.mcp_data_ready(0x0C)) { /* waits */ }
-        for (auto &sample : samples) {
-            sample[0] = MCP3912.read_single_value(0);
-            sample[1] = MCP3912.read_single_value(1);
-            sample[2] = MCP3912.read_single_value(2);
-            sample[3] = MCP3912.read_single_value(3);
+        unsigned long currentMillis = millis();
+        if (currentMillis - previousMillis >= measureDelay) {
+            previousMillis = currentMillis;
+            while (!MCP3912.mcp_data_ready(0x0C)) { /* waits */ }
+            for (auto &sample : samples) {
+                sample[0] = MCP3912.read_single_value(0);
+                sample[1] = MCP3912.read_single_value(1);
+                sample[2] = MCP3912.read_single_value(2);
+                sample[3] = MCP3912.read_single_value(3);
+            }
+            return_median_to_var(samples, filtered);
+            Serial.printf("\r\n%i,%i,%i,%i", filtered[0], filtered[1], filtered[2], filtered[3]);
         }
-        return_median_to_var(samples, filtered);
-        Serial.printf("\r\n%i,%i,%i,%i", filtered[0], filtered[1], filtered[2], filtered[3]);
     }
 }
 

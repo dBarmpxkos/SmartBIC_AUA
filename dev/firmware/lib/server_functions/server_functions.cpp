@@ -1,6 +1,7 @@
 #include "server_functions.h"
 
 extern volatile bool activeADC;
+extern unsigned long measureDelay;
 extern int32_t filtered[4];
 /* WiFi */
 char ssid[] = "SmartBIC";
@@ -12,10 +13,14 @@ IPAddress subnet(255,255,255,0);
 AsyncWebServer RESTServer(80);
 
 /* API */
-char startSampling[]    = "/v1/start";
-char stopSampling[]     = "/v1/stop";
-char singleShot[]       = "/v1/single";
-char range[]            = "/v1/all";
+const char startSampling[]    = "/v1/start";
+const char stopSampling[]     = "/v1/stop";
+const char singleShot[]       = "/v1/single";
+const char range[]            = "/v1/range";
+const char experiment[]       = "/v1/exp";
+const char PARAM_DUR[]        = "duration";
+const char PARAM_INTV[]       = "interval";
+const char PARAM_RAW[]        = "matrix";
 
 void setup_AP(char *SSID, char *PWD,
               const IPAddress &softlocalIP, const IPAddress &softGateway, const IPAddress &softSubnet){
@@ -50,13 +55,20 @@ void single_shot(AsyncWebServerRequest *request){
     request->send(response);
 }
 
-void batch(AsyncWebServerRequest *request){
-    AsyncResponseStream *response = request->beginResponseStream("text/html");
-    response->addHeader("Server","SmartBiC");
-    response->printf("%d, %d, %d, %d", filtered[0], filtered[1], filtered[2], filtered[3]);
-    request->send(response);
-}
+void experiment_program(AsyncWebServerRequest *request){
+    int paramsNr = request->params();
 
+    for(int i=0;i<paramsNr;i++){
+        AsyncWebParameter* p = request->getParam(i);
+        if (strcmp(p->name().c_str(), PARAM_INTV) == 0) {
+            measureDelay = p->value().toInt();
+        }
+        else if (strcmp(p->name().c_str(), PARAM_INTV) == 0) {
+            measureDelay = p->value().toInt();
+        }
+    }
+    request->send(200, "text/plain", "message received");
+}
 
 void setup_endpoints(){
 
@@ -64,8 +76,11 @@ void setup_endpoints(){
         request->send(200, "text/plain", "SmartBiC RESTful API v1");
     });
 
+    RESTServer.on(startSampling,HTTP_GET, start_sampling);
+    RESTServer.on(stopSampling,HTTP_GET, stop_sampling);
     RESTServer.on(singleShot,HTTP_GET, single_shot);
     RESTServer.on(range,HTTP_GET, batch);
+    RESTServer.on(experiment, HTTP_GET, experiment_program);
 
     RESTServer.onNotFound(not_found);
     RESTServer.begin();
