@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>⚡ Web graph endpoint ⚡</title>
+	</head>
+	<body>
+		<div id="chart"></div>
+		<script src="dist\apexcharts"></script>
+		<script>
+		var abort = true;
+
+			(async function () {
+				const REFRESH_INTERVAL = 1000; // ms
+				const pointsInChart = 3600;
+				let data1 = [];
+				let data2 = [];
+				let data3 = [];
+				let data4 = [];
+				const options = {
+					series: [
+						{	name: "Channel 1",
+							data: data1,
+						},
+						{	name: "Channel 2",
+							data: data2,
+						},
+						{	name: "Channel 3",
+							data: data3,
+						},
+						{	name: "Channel 4",
+							data: data4,
+						},
+					],
+					chart: {
+						id: 'realtime',
+						height: 350,
+						type: 'line',
+						animations: {
+							enabled: true,
+							easing: 'linear',
+							speed: 10,
+							dynamicAnimation: {
+								enabled: true,
+								speed: 350
+							},
+							animateGradually: {
+							    enabled: true,
+							    delay: 150
+							},
+						},
+
+						toolbar: {
+							show: true,
+						},
+						zoom: {
+							enabled: false,
+						},
+					},
+					dataLabels: {
+						enabled: false,
+					},
+					stroke: {
+						curve: 'smooth',
+					},
+					title: {
+						text: 'SmartBIC ✕ microSENSES | Live Experiment Monitor 🧪🔥',
+						align: 'left',
+					},
+					markers: {
+						size: 0,
+					},
+					xaxis: {
+						type: 'numeric',
+						min: 1,
+						max: pointsInChart,
+						tickAmount: pointsInChart - 1,
+						tickPlacement: 'off',
+						decimalsInFloat: 0,
+					    labels: {
+					          show: false,
+					    },
+					},
+					// yaxis: {
+					// 	min: 1,
+					// 	max: 100,
+					// },
+					legend: {
+						show: false,
+					},
+				};
+
+				const chart = new ApexCharts(document.querySelector('#chart'), options);
+				chart.render();
+
+				async function getUpdatedData() {
+					const newDataJSON = await getNewDataPoint();
+					const newDP1 = newDataJSON.ch1;
+					const newDP2 = newDataJSON.ch2;
+					const newDP3 = newDataJSON.ch3;
+					const newDP4 = newDataJSON.ch4;
+
+					const thresholdX = data1.length >= pointsInChart;
+
+					const newData1 = data1.map(({x,y}, i) => ({
+						x : thresholdX ? x - 1 : x,
+						y, 
+					}));
+					newData1.push({
+						x : thresholdX ? pointsInChart : data1.length + 1,
+						y : newDP1,
+					});
+
+					const newData2 = data2.map(({x,y}, i) => ({
+						x : thresholdX ? x - 1 : x,
+						y, 
+					}));
+					newData2.push({
+						x : thresholdX ? pointsInChart : data1.length + 1,
+						y : newDP2,
+					});
+
+					const newData3 = data3.map(({x,y}, i) => ({
+						x : thresholdX ? x - 1 : x,
+						y, 
+					}));
+					newData3.push({
+						x : thresholdX ? pointsInChart : data3.length + 1,
+						y : newDP3,
+					});
+
+					const newData4 = data4.map(({x,y}, i) => ({
+						x : thresholdX ? x - 1 : x,
+						y, 
+					}));
+					newData4.push({
+						x : thresholdX ? pointsInChart : data4.length + 1,
+						y : newDP4,
+					});
+
+					return {
+						ch1: newData1,
+						ch2: newData2,
+						ch3: newData3,
+						ch4: newData4
+					};
+				}
+
+				const intervalId = setInterval(async function () {
+					if (abort) return;
+					const freshData = await getUpdatedData();
+					data1 = freshData.ch1;
+					data2 = freshData.ch2;
+					data3 = freshData.ch3;
+					data4 = freshData.ch4;
+					chart.updateOptions({
+					series: [
+						{	name: "Channel 1",
+							data: data1,
+						},
+						{	name: "Channel 2",
+							data: data2,
+						},
+						{	name: "Channel 3",
+							data: data3,
+						},
+						{	name: "Channel 4",
+							data: data4,
+						},
+					],
+					});
+
+					// if (data1.length > 3600) {
+					// 	data1 = [];
+					// }
+
+					// if (data2.length > 3600) {
+					// 	data2 = [];
+					// }
+
+					// if (data3.length > 3600) {
+					// 	data3 = [];
+					// }
+
+					// if (data4.length > 3600) {
+					// 	data4 = [];
+					// }
+
+				}, REFRESH_INTERVAL);
+
+
+				async function getNewDataPoint() {
+					const response = await fetch(
+						'http://192.168.1.99/v1/single'
+					);
+					const newDataJSON = await response.json();
+					return newDataJSON;
+				}
+			})();
+		</script>
+		
+	<button onclick="abort = false">Start 👍</button>
+	<button onclick="abort = true">Stop ✋</button>
+	</body>
+</html>

@@ -5,8 +5,9 @@ void setup() {
     start_clock(MCP_CLK_PIN, MCP_FREQ);             /* clock pulse to MCP CLKIN pin */
 
     setup_AP(ssid, password, localIP, gateway, subnet);
-    setup_endpoints();
 
+    setup_endpoints();
+    
     Serial.print(logo);
     Serial.print(firmwareNFO);
     MCP3912.initialize_with_conf(activeConf);    /* felt cute might delete later */

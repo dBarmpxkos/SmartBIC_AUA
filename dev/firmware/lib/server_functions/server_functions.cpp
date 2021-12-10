@@ -5,7 +5,7 @@ extern unsigned long measureDelay;
 extern int32_t filtered[4];
 /* WiFi */
 char ssid[] = "SmartBIC";
-char password[] = "zmartBIKZ";
+char password[] = "smartbic";
 
 IPAddress localIP(192,168,1,99);
 IPAddress gateway(192,168,1,1);
@@ -49,12 +49,17 @@ void stop_sampling(AsyncWebServerRequest *request){
 }
 
 void single_shot(AsyncWebServerRequest *request){
-    AsyncResponseStream *response = request->beginResponseStream("text/html");
-    response->addHeader("Server","SmartBiC");
-    response->printf("%d, %d, %d, %d", filtered[0], filtered[1], filtered[2], filtered[3]);
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    DynamicJsonDocument json(1024);
+
+    json["ch1"] = filtered[0];
+    json["ch2"] = filtered[1];
+    json["ch3"] = filtered[2];
+    json["ch4"] = filtered[3];
+    serializeJson(json, *response);
+
     request->send(response);
 }
-
 void experiment_program(AsyncWebServerRequest *request){
     int paramsNr = request->params();
 
@@ -79,9 +84,9 @@ void setup_endpoints(){
     RESTServer.on(startSampling,HTTP_GET, start_sampling);
     RESTServer.on(stopSampling,HTTP_GET, stop_sampling);
     RESTServer.on(singleShot,HTTP_GET, single_shot);
-    RESTServer.on(range,HTTP_GET, batch);
     RESTServer.on(experiment, HTTP_GET, experiment_program);
 
     RESTServer.onNotFound(not_found);
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     RESTServer.begin();
 }

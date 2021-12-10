@@ -1,0 +1,52 @@
+Altium Designer Pick and Place Locations
+C:\Users\euphoria\OneDrive - University of West Attica\AUA_BARMPAKOS\SmartBIC_AUA\dev\hardware\Bio_measurement_HW\Project Outputs for Bio_measurement_HW\Pick Place for PCB1.csv
+
+========================================================================================================================
+File Design Information:
+
+Date:       17/09/21
+Time:       18:52
+Revision:   ba8211e0148ee42484f45a696ff3aadd30fb7f89
+Variant:    No variations
+Units used: mil
+
+"Designator","Comment","Layer","Footprint","Center-X(mil)","Center-Y(mil)","Rotation","Description"
+"J1","GND_JUMPER","TopLayer","CONN_2POS_2.54PITCH","2580.000","2490.000","180","Connector Header Through Hole 2 position 0.100" (2.54mm)"
+"R14","10","TopLayer","RES_0805","1915.000","1705.000","90","Res 1K 0805 5% 1/8W"
+"R12","10","TopLayer","RES_0805","2130.000","1710.000","90","Res 1K 0805 5% 1/8W"
+"C17","100nF","TopLayer","CAP_0603","3215.000","2310.000","90","Cap 100nF 6V 603 Ceramic"
+"C16","100nF","TopLayer","CAP_0603","3215.000","2011.892","90","Cap 100nF 6V 603 Ceramic"
+"C15","100nF","TopLayer","CAP_0603","3215.000","1713.783","90","Cap 100nF 6V 603 Ceramic"
+"C14","100nF","TopLayer","CAP_0603","3215.000","1415.675","90","Cap 100nF 6V 603 Ceramic"
+"U3","ESP32-DEVKITC-32D","TopLayer","MODULE_ESP32-DEVKITC-32D","825.000","1247.953","0","EVAL BOARD FOR ESP-WROOM-32"
+"U2","NCP1117ST33T3G","TopLayer","SOT223","1930.000","2207.204","90",""
+"U1","MCP3912","TopLayer","TI_SSOP-24_DB","2575.000","2070.472","180",""
+"R17","10","TopLayer","RES_0805","1585.000","1705.000","90","Res 1K 0805 5% 1/8W"
+"R16","10","TopLayer","RES_0805","1695.000","1705.000","90","Res 1K 0805 5% 1/8W"
+"R15","10","TopLayer","RES_0805","1810.000","1705.000","90","Res 1K 0805 5% 1/8W"
+"R13","10","TopLayer","RES_0805","2020.000","1706.811","90","Res 1K 0805 5% 1/8W"
+"R11","100","TopLayer","RES_0805","2225.000","1710.000","90","Res 1K 0805 5% 1/8W"
+"R10","1K","TopLayer","RES_0805","3381.811","2374.999","180","Res 1K 0805 5% 1/8W"
+"R9","1K","TopLayer","RES_0805","3381.811","2228.570","180","Res 1K 0805 5% 1/8W"
+"R8","1K","TopLayer","RES_0805","3381.811","2082.142","180","Res 1K 0805 5% 1/8W"
+"R7","1K","TopLayer","RES_0805","3381.811","1935.714","180","Res 1K 0805 5% 1/8W"
+"R6","1K","TopLayer","RES_0805","3381.811","1789.285","180","Res 1K 0805 5% 1/8W"
+"R5","1K","TopLayer","RES_0805","3381.811","1642.857","180","Res 1K 0805 5% 1/8W"
+"R2","10","TopLayer","RES_0805","2496.462","1779.569","180","Res 1K 0805 5% 1/8W"
+"R1","10","TopLayer","RES_0805","2720.292","1780.000","180","Res 1K 0805 5% 1/8W"
+"R4","1K","TopLayer","RES_0805","3381.811","1496.428","180","Res 1K 0805 5% 1/8W"
+"R3","1K","TopLayer","RES_0805","3381.811","1350.000","180","Res 1K 0805 5% 1/8W"
+"P1","ADC_CHANNELS","TopLayer","HDR1X12","3605.000","1840.000","90","Header, 12-Pin"
+"C13","100nF","TopLayer","CAP_0603","2915.000","2275.000","180","Cap 100nF 6V 603 Ceramic"
+"C12","10uF","TopLayer","CAP_0603","2130.000","2185.000","270","Cap 100nF 6V 603 Ceramic"
+"C11","10uF","TopLayer","CAP_0603","1730.000","2185.000","270","Cap 100nF 6V 603 Ceramic"
+"C10","100nF","TopLayer","CAP_0603","3115.000","2370.000","90","Cap 100nF 6V 603 Ceramic"
+"C9","100nF","TopLayer","CAP_0603","3115.000","2223.008","270","Cap 100nF 6V 603 Ceramic"
+"C8","100nF","TopLayer","CAP_0603","3115.000","2076.017","90","Cap 100nF 6V 603 Ceramic"
+"C7","100nF","TopLayer","CAP_0603","3115.000","1929.025","270","Cap 100nF 6V 603 Ceramic"
+"C6","100nF","TopLayer","CAP_0603","2535.000","1645.000","90","Cap 100nF 6V 603 Ceramic"
+"C5","100nF","TopLayer","CAP_0603","2720.292","1658.455","180","Cap 100nF 6V 603 Ceramic"
+"C4","100nF","TopLayer","CAP_0603","3115.000","1782.033","90","Cap 100nF 6V 603 Ceramic"
+"C3","100nF","TopLayer","CAP_0603","3115.000","1635.041","270","Cap 100nF 6V 603 Ceramic"
+"C2","100nF","TopLayer","CAP_0603","3115.000","1488.050","90","Cap 100nF 6V 603 Ceramic"
+"C1","100nF","TopLayer","CAP_0603","3115.000","1341.058","270","Cap 100nF 6V 603 Ceramic"

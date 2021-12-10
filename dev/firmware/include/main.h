@@ -8,7 +8,6 @@
 #include "driver/ledc.h"
 #include "../lib/generic_functions/generic_functions.h"
 #include "server_functions.h"
-
 /* end of includes */
 
 /* variables */
@@ -20,7 +19,7 @@ unsigned long previousMillis = 0;
 const int16_t RAW_SAMPLE_SIZE = 20;
 int32_t samples[RAW_SAMPLE_SIZE][4] = {};
 int32_t filtered[4];
-volatile bool activeADC = false;
+volatile bool activeADC = true;
 
 /* PFP */
 void start_clock(uint8_t clk_pin, uint32_t frequency);
