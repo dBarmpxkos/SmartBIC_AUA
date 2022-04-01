@@ -26,4 +26,4 @@ void experiment_program(AsyncWebServerRequest *request);
 
 void setup_endpoints();
 
-#endif //FIRMWARE_SERVER_FUNCTIONS_H
+#endif //SERVER_FUNCTIONS_H

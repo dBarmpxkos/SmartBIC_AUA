@@ -186,6 +186,8 @@ void MCP3912::write_MCP_configuration(ADCConfig activeConfig) {
 }
 
 bool MCP3912::initialize_with_conf(ADCConfig &activeConfig){
+    pinMode(MCP_RESET_PIN, OUTPUT);
+    digitalWrite(MCP_RESET_PIN, HIGH);
     MCP3912::setup_MCP_configuration(activeConfig);
     MCP3912::write_MCP_configuration(activeConfig);
     MCP3912::read_MCP_configuration();
